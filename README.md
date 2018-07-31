@@ -6,12 +6,16 @@ Also checkout the other respository linked to the research: https://github.com/m
 
 
 ## Setup
-Clone this repo and cd into the directory:
+Clone this repo, cd into the directory and install the required modules:
 
 ```
 git clone https://github.com/memmelma/MongOData_NodeJS.git
 cd C:\Users\toastuser\Desktop\MongOData_NodeJS
+npm install
 ```
+
+It is also required to install a mongoDb instance and provide the connection information (collection name, database name, connection url) in the app.js . Information regarding the installation and setup process of the mongoDB can be found here: https://www.mongodb.com/
+
 
 ## Running
 You can run the endpoint by launching it via 
