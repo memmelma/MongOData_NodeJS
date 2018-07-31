@@ -17,6 +17,8 @@ app.get('/data/odata-mongo', odataMongo(), async (req, res) => {
     let client;
     let MongoClient = mongodb.MongoClient;
     client = await MongoClient.connect(url, { useNewUrlParser: true });
+    console.log("Connected to mongodb!");
+    
     let db = client.db(dbName);
     db.collection(colName).find(req.mongo.query, req.mongo.queryOptions).toArray((err, docs) => {
         res.json({
@@ -28,14 +30,14 @@ app.get('/data/odata-mongo', odataMongo(), async (req, res) => {
 
 //OData V4 Service modules - MongoDB Connector
 //https://www.npmjs.com/package/odata-v4-mongodb
-app.get("/api/odata-v4-mongodb", async function(req, res) {
+app.get("/data/odata-v4-mongodb", async function(req, res) {
     try{
         let client;
         try{
             //Establish connection with mongoDB instance
             let MongoClient = mongodb.MongoClient;
             client = await MongoClient.connect(url, { useNewUrlParser: true });
-            console.log("Connected to server!");
+            console.log("Connected to mongodb!");
         }
         catch(e){
             res.writeHead(500, {'Content-Type': 'application/json'});
@@ -67,7 +69,7 @@ app.get("/api/odata-v4-mongodb", async function(req, res) {
                 if(JSON.stringify(req.query) !== '{}' && typeof query === 'undefined'){
                     throw new Error('Invalid query!' + '\n' + e);
                 }
-                
+
                 get_from_db(res, req, client, query)
             }
         }
