@@ -1,46 +1,48 @@
-# getting-started-nodejs
+# MongOData_NodeJS
 
-[![wercker status](https://app.wercker.com/status/7b1a402dd00d57fc9abddf9eb5161675/s "wercker status")](https://app.wercker.com/project/bykey/7b1a402dd00d57fc9abddf9eb5161675)
+Disclaimer: This repository is part of a university project paper with the title ```Feasibility of an OData Interface on a NoSQL database using the example of a MongoDB```. If interested, you can contact me and I will provide you with the complete documentation of my research.
 
-A sample application in Javascript on NodeJS for Wercker.
+Also checkout the other respository linked to the research: https://github.com/memmelma/MongOData_Csharp
 
-This application uses the `node` container obtained from the [Docker Hub](https://hub.docker.com/_/node/)
 
 ## Setup
-Clone this repo and cd into the directory:
+Clone this repo, cd into the directory and install the required modules:
 
 ```
-git clone https://github.com/wercker/getting-started-nodejs.git
-cd getting-started-nodejs
+git clone https://github.com/memmelma/MongOData_NodeJS.git
+cd C:\Users\toastuser\Desktop\MongOData_NodeJS
+npm install
 ```
+
+It is also required to install a mongoDb instance and provide the connection information (collection name, database name, connection url) in the app.js . Information regarding the installation and setup process of the mongoDB can be found here: https://www.mongodb.com/
+
 
 ## Running
-You can run the sample app in a couple of different ways. The first is to simply launch the executable:
+You can run the endpoint by launching it via 
 ```
 node app.js
 ```
+After that, the data can be accessed via ```localhost:8080/data/[api identifier] ```.
 
-Now point your browser at `http://localhost:8080` to see:
-```
-{"cities":["Amsterdam","Berlin","New York","San Francisco","Tokyo"]}
-```
+## Version 1 - @sealsystems/odata-mongo
+This variant uses the following module: https://github.com/sealsystems/node-odata-mongo
 
-The second, and more useful, way is to use the `wercker dev` command to launch the binary within a Docker container, using the base image defined in the `box/id` property at the top of the `wercker.yml`, like so:
-```
-wercker dev --expose-ports
-```
-The `dev` target inside `wercker.yml` uses the `internal/watch` step to dynamically reload the runtime container when sourcefile changes are detected, which allows you to quickly test changes without having to kill/rebuild/relaunch the container. For instance, add another city to the array on `app.js:3' like so:
+Can be accessed by using  ``` odata-mongo ``` as api identifier.
 
-```
-var cities = {"cities":["Amsterdam","Berlin","New York","San Francisco","Tokyo","London"]}
-```
 
-and then refresh your browser pointing to `http://localhost:8080` to see:
-```
-{"cities":["Amsterdam","Berlin","New York","San Francisco","Tokyo","London"]}}
-```
+## Version 2 - OData V4 Service modules - MongoDB Connector
+This variant uses the following module: https://www.npmjs.com/package/odata-v4-mongodb
 
----
-Sign up for Wercker: http://www.wercker.com
+Can be accessed by using 
+``` odata-v4-mongodb ``` as api identifier.
 
-Learn more at: http://devcenter.wercker.com
+
+On this identifier the ```$metadata``` operator is also available. This is accomplished by using the module 
+``` mongodb-schema ``` which can be found under the following link https://github.com/mongodb-js/mongodb-schema .
+
+
+The module provides an option to show the schema for a mongoDb collection. As mongoDb is a NoSql database with a non relational schema, the syntax and visualization is different to one provided by e.g. a ASP.NET OData endpoint und this operator.
+
+
+## Conclusion
+Both variants provide the basic OData functionality, but fail when it comes to combining multiple operations. E.g. applying multiple "filters" at once works for both, but adding a "select" operation is ignored by version 2. Attempts to update the functionality are made in the repository Wikis, but there currently are no signs to prove these.
