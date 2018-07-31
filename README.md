@@ -1,5 +1,10 @@
 # MongOData_NodeJS
 
+Disclaimer: This repository is part of a university project paper with the title ```Feasibility of an OData Interface on a NoSQL database using the example of a MongoDB```. If interested, you can contact me and I will provide you with the complete documentation of my research.
+
+Also checkout the other respository linked to the research: https://github.com/memmelma/MongOData_Csharp
+
+
 ## Setup
 Clone this repo and cd into the directory:
 
