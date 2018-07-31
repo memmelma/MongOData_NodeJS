@@ -4,13 +4,31 @@ var app = express();
 var mongodb = require('mongodb');
 var createFilter = require('odata-v4-mongodb').createFilter;
 var parseSchema = require('mongodb-schema');
+const odataMongo = require('@sealsystems/odata-mongo');
 
-var colName = 'zips';
-var dbName = 'test';
-var url = 'mongodb://localhost:32772/test';
+//set mongoDb connection information
+var colName = 'product_data';
+var dbName = 'PIM_db';
+var url = 'mongodb://localhost:32768/';
 
+//@sealsystems/odata-mongo
+//https://github.com/sealsystems/node-odata-mongo
+app.get('/data/odata-mongo', odataMongo(), async (req, res) => {
+    let client;
+    let MongoClient = mongodb.MongoClient;
+    client = await MongoClient.connect(url, { useNewUrlParser: true });
+    let db = client.db(dbName);
+    db.collection(colName).find(req.mongo.query, req.mongo.queryOptions).toArray((err, docs) => {
+        res.json({
+            '@odata.context': /*req.protocol + '://' + req.get('host') + */'/api/$metadata',
+            value: docs
+        });
+    });
+  });
 
-app.get("/api/odata", async function(req, res) {
+//OData V4 Service modules - MongoDB Connector
+//https://www.npmjs.com/package/odata-v4-mongodb
+app.get("/api/odata-v4-mongodb", async function(req, res) {
     try{
         let client;
         try{
@@ -28,19 +46,28 @@ app.get("/api/odata", async function(req, res) {
         }
 
         try{
-            //$metadata request
+            
             console.log(JSON.stringify(req.query));
+            
+            //parser
+            //var parser = require('odata-v4-parser');
+            //console.log(parser.filter(req.query.$filter));
+            
+            //$metadata request
             if(JSON.stringify(req.query) ==='{"$metadata":""}'){
                 parse_db_shema(res, client);
             }
+
             //Standard query 
             else{
-                var query = createFilter(req.query.$filter);//var select = createFilter(req.query.$select);
+                var query = createFilter(req.query.$filter);
+
                 console.log('Filter$ ' + req.query.$filter);
 
                 if(JSON.stringify(req.query) !== '{}' && typeof query === 'undefined'){
                     throw new Error('Invalid query!' + '\n' + e);
                 }
+                
                 get_from_db(res, req, client, query)
             }
         }
@@ -111,4 +138,4 @@ module.exports = app;
         var r = yield db.collection('inserts').insertMany([{a:2}, {a:3}]);
         assert.equal(2, r.insertedCount);
         console.log("Inserted second document");
-        */
+*/

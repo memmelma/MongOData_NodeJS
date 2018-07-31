@@ -5,11 +5,13 @@
     "node": "0.6.x"
   },
   "dependencies": {
+    "@sealsystems/odata-mongo": "0.0.9",
     "express": "^4.16.3",
     "mocha": "^5.2.0",
     "mongodb": "^3.1.0-beta4",
     "nodeunit": "0.7.4",
     "odata-v4-mongodb": "^0.1.12",
+    "odata-v4-parser": "^0.1.29",
     "supertest": "^3.1.0"
   },
   "scripts": {
