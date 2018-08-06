@@ -23,7 +23,7 @@ app.get('/data/odata-mongo', odataMongo(), async (req, res) => {
         
         console.log(JSON.stringify(req.mongo));
 
-        get_from_db(res, req, client, '/data/odata-mongo', req.mongo.query, req.mongo.queryOptions)
+        get_from_db(res, req, client, '/data/odata-mongo', req.mongo.query, req.mongo.queryOptions);
 
     }catch(e){
 
@@ -52,12 +52,12 @@ app.get('/data/odata-v4-mongodb', async function(req, res) {
             }
             else if(query ==='{"$metadata":""}'){
 
-                parse_db_shema(res, client, '/data/odata-v4-mongodb');
+               parse_db_shema(res, req, client, '/data/odata-v4-mongodb');
 
             }
             else if (query === "{}"){
 
-                get_from_db(res, req, client, '/data/odata-v4-mongodb', "{}", )
+                get_from_db(res, req, client, '/data/odata-v4-mongodb', "{}", );
 
             }
             //if query is valid, get data from db
@@ -122,25 +122,31 @@ var get_from_db = async (res, req, client, route, query, query_options) => {
 };
 
 
-var parse_db_shema = async (res, client, route) => {
+var parse_db_shema = async (res, req, client, route) => {
     
     let db = client.db(dbName);
     let collection = db.collection(colName)
 
     //here we are passing in a cursor as the first argument. 
     //you can also pass in a stream or an array of documents directly.
-    parseSchema(collection.find(), /*{semanticTypes: true, storeValues : false},*/ function(err, schema){
+    //https://www.npmjs.com/package/mongodb-schema
+    parseSchema(collection.find(), 
+        //As of version 6.1.0, mongodb-schema supports analysing only the structure of the documents, without collection data samples.
+        {storeValues : false}, 
+        function(err, schema)
+    {
+        
         if (err) return console.error(err);
 
         res.json({
-            '@odata.context': req.protocol + '://' + req.get('host') + route + '$metadata',
-            value: schema
+            '@odata.context': /*req.protocol + '://' + req.get('host') + */ route + '$metadata',
+            schema: schema //schema
         });
 
         client.close();
         console.log("Client closed");
 
-    }.bind(res, req));
+    }.bind(res));
 };
 
 var port = process.env.PORT || 8080;
